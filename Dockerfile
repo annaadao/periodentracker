@@ -1,10 +1,10 @@
 FROM gradle:jdk21-jammy AS build
-COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle build --no-daemon
+COPY --chown=gradle:gradle . .
+RUN ./gradlew --no-daemon clean bootJar -x test
 
-LABEL org.name="NinaAnna"
-
-FROM eclipse-temurin:21-jdk-jammy
-COPY --from=build /home/gradle/src/build/libs/periodentracker-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+ENV PORT=8080
+CMD ["java","-Dserver.port=8080","-jar","/app/app.jar"]
