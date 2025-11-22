@@ -1,8 +1,10 @@
-FROM gradle:jdk21-jammy AS build
-COPY --chown=gradle:gradle . /home/gradle/src
-WORKDIR /home/gradle/src
-RUN gradle build --no-daemon
+FROM gradle:8.5-jdk21 AS build
+WORKDIR /app
+COPY . .
+RUN gradle clean bootJar -x test --no-daemon
 
-FROM eclipse-temurin:21-jdk-jammy
-COPY --from=build /home/gradle/src/build/libs/periodentracker-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app/app.jar"]
