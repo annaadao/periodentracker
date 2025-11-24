@@ -6,10 +6,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin( origins = {"http://localhost:5175", "https://periodentracker-frontend.onrender.com"})
 public class PeriodEntryController {
 
     private final PeriodEntryService periodEntryService;
-
     public PeriodEntryController(PeriodEntryService periodEntryService) {
         this.periodEntryService = periodEntryService;
     }
@@ -18,4 +18,6 @@ public class PeriodEntryController {
     public ResponseEntity<List<PeriodEntry>> getEntries() {
         return ResponseEntity.ok(periodEntryService.getAllEntries());
     }
+
+
 }
