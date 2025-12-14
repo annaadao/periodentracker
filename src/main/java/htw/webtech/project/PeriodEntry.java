@@ -1,25 +1,35 @@
 package htw.webtech.project;
 
+import java.time.LocalDate;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
 public class PeriodEntry {
 
-    private String date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String symptom;
+
+    @Column(length = 2000)
     private String note;
+
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate date;
 
     public PeriodEntry() {}
 
-    public PeriodEntry(String date, String symptom, String note) {
-        this.date = date;
-        this.symptom = symptom;
-        this.note = note;
+    //Getter, Setter
+    public Long getId() {
+        return id;
     }
 
-    //Getter, Setter
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

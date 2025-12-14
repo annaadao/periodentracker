@@ -6,10 +6,17 @@ import java.util.List;
 @Service
 public class PeriodEntryService {
 
+    private final PeriodEntryRepository repo;
+
+    public PeriodEntryService(PeriodEntryRepository repo) {
+        this.repo = repo;
+    }
+
     public List<PeriodEntry> getAllEntries() {
-        return List.of(
-                new PeriodEntry("2025-10-17", "Krämpfe", "War müde"),
-                new PeriodEntry("2025-10-18", "Kopfschmerzen", "Ziemlich stressig heute")
-        );
+        return repo.findAll();
+    }
+
+    public PeriodEntry create(PeriodEntry entry) {
+        return repo.save(entry);
     }
 }

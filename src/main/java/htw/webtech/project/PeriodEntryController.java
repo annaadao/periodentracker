@@ -6,7 +6,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin( origins = {"http://localhost:5175", "https://periodentracker-frontend.onrender.com"})
+@CrossOrigin( origins = {"http://localhost:5174", "http://localhost:5175", "https://periodentracker-frontend.onrender.com"})
 public class PeriodEntryController {
 
     private final PeriodEntryService periodEntryService;
@@ -19,5 +19,9 @@ public class PeriodEntryController {
         return ResponseEntity.ok(periodEntryService.getAllEntries());
     }
 
+    @PostMapping("/entries")
+    public PeriodEntry create(@RequestBody PeriodEntry entry) {
+        return periodEntryService.create(entry);
+    }
 
 }
