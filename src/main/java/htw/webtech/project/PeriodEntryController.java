@@ -24,7 +24,7 @@ public class PeriodEntryController {
         return ResponseEntity.ok(periodEntryService.getAllEntries());
     }
 
-    @PostMapping("/entries") // CREATE - Client sendet DAten, Backend verarbeitet und speichert
+    @PostMapping("/entries") // CREATE - Client sendet Daten, Backend verarbeitet und speichert
     public PeriodEntry create(@RequestBody PeriodEntry entry) {
         return periodEntryService.create(entry);
     }
