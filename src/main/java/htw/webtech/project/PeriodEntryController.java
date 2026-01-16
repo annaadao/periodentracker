@@ -2,6 +2,7 @@ package htw.webtech.project;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
@@ -12,36 +13,46 @@ import java.time.format.DateTimeParseException;
 @CrossOrigin(origins = "*")
 public class PeriodEntryController {
 
-    private final PeriodEntryService periodEntryService;
-    private LocalDate date;
+    private final PeriodEntryService service;
 
-    public PeriodEntryController(PeriodEntryService periodEntryService) {
-        this.periodEntryService = periodEntryService;
+    public PeriodEntryController(PeriodEntryService service) {
+        this.service = service;
     }
 
-    @GetMapping("/entries") // READ - Client fordert Daten an
+    // READ
+    @GetMapping("/entries")
     public ResponseEntity<List<PeriodEntry>> getEntries() {
-        return ResponseEntity.ok(periodEntryService.getAllEntries());
+        return ResponseEntity.ok(service.getAllEntries());
     }
 
-    @PostMapping("/entries") // CREATE - Client sendet Daten, Backend verarbeitet und speichert
-    public PeriodEntry create(@RequestBody PeriodEntry entry) {
-        return periodEntryService.create(entry);
+    // CREATE (Upsert by date, verhindert Duplikate)
+    @PostMapping("/entries")
+    public ResponseEntity<PeriodEntry> upsert(@RequestBody PeriodEntry entry) {
+        return ResponseEntity.ok(service.upsertByDate(entry));
     }
 
+    // UPDATE
+    @PutMapping("/entries/{id}")
+    public ResponseEntity<PeriodEntry> update(@PathVariable Long id, @RequestBody PeriodEntry entry) {
+        return ResponseEntity.ok(service.updateById(id, entry));
+    }
+
+    // DELETE by ID
+    @DeleteMapping("/entries/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // DELETE by date (löscht auch alte Duplikate!)
     @DeleteMapping("/entries/by-date/{date}")
     public ResponseEntity<Void> deleteByDate(@PathVariable String date) {
         try {
             LocalDate parsed = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            boolean deleted = periodEntryService.deleteByDate(parsed);
-            return deleted ? ResponseEntity.noContent().build()
-                    : ResponseEntity.notFound().build();
+            boolean deleted = service.deleteByDate(parsed);
+            return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
         } catch (DateTimeParseException ex) {
             return ResponseEntity.badRequest().build();
         }
     }
-
-
-
-
 }

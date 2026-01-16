@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public interface PeriodEntryRepository extends JpaRepository<PeriodEntry, Long> {
 
-    @Modifying
+    Optional<PeriodEntry> findFirstByDateOrderByIdDesc(LocalDate date);
+
+    @Modifying(clearAutomatically = true)
     @Query("delete from PeriodEntry p where p.date = :date")
     int deleteAllByDate(@Param("date") LocalDate date);
 }
-
-
