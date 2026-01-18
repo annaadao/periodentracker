@@ -103,3 +103,5 @@ public class PeriodEntry {
         this.meds = (meds == null) ? new ArrayList<>() : meds;
     }
 }
+
+//Hallo
